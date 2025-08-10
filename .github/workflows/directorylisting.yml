@@ -1,41 +1,38 @@
-name: directory-listing
+name: main
 on: [push]
 
 jobs:
   pages-directory-listing:
     runs-on: ubuntu-latest
-    name: Directory Listings Index
+    name: Run Actions Template
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-        sparse-checkout: |
-          webroot
-
+          ref: main
+          
       - name: Generate Directory Listings
-        uses: jayanta525/github-pages-directory-listing@v4.0.0
+        uses: jayanta525/github-pages-directory-listing@main
         with:
-          FOLDER: webroot      #directory to generate index
+          FOLDER: webroot
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3.0.1
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: 'webroot'      # upload generated folder
-  
+          path: webroot
+
   deploy:
     needs: pages-directory-listing
     permissions:
       pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+      id-token: write   # to verify the deployment source
 
-    # Deploy to the github-pages environment
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
-    # Specify runner + deployment step
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.0
+        uses: actions/deploy-pages@v4
